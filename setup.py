@@ -6,5 +6,6 @@ setuptools.setup(
     author="pycetra",
     author_email="pycetra@pycetra.com",
     description="markdown2graph and graph2markdown",
+    include_package_data=True,
     packages=setuptools.find_packages(),
 )
