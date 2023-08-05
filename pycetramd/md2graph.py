@@ -33,7 +33,9 @@ def main(text, config):
         lambda x: x.replace(" ", "") if x.startswith("#") else x
     )
     df["sortkey"] = getSortKey(df)
-    df["region"] = getRegion(df.to_records(index=False))
+    df["region"] = fix_records_under_positionroot_are_in_the_same_region(
+        df.to_records(index=False)
+    )
     node_f_md = df
 
     size = len(node_f_md)
@@ -207,9 +209,11 @@ def formattedRegion(s):
     return formatted(s.replace("#", ""))
 
 
-def getRegion(node_f):
+def fix_records_under_positionroot_are_in_the_same_region(node_f):
     result = [""] * len(node_f)
+    region = ""
     for n, i in enumerate(node_f):
         if i["text"].startswith("#") and not i["text"].startswith("##"):
-            result[n] = formattedRegion(i["text"])
+            region = formattedRegion(i["text"])
+        result[n] = region
     return result
