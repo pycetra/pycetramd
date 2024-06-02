@@ -6,6 +6,8 @@ def main(link_f, node_f):
     """
     graph構造をmarkdown形式に変換する
     """
+    if node_f.shape[0]==0:
+        return ""
     link_f = pd.DataFrame(link_f)
     node_f = pd.DataFrame(node_f)
 
@@ -68,7 +70,7 @@ def getRootCategory(link_f, node_f):
 
 
 def fusionLinkAndNode(link_f, node_f):
-    new_link_list = []
+    new_link_list = [pd.DataFrame(columns=link_f.columns)]
     for i in node_f[node_f["level"] == 0].to_dict("records"):
         root_id = i["id"]
         index1 = link_f["root_category"] == root_id

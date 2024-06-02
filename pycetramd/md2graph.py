@@ -1,10 +1,30 @@
+# %%
 import numpy as np
 import pandas as pd
-
+from IPython.display import display
 from pycetramd import datatype as datatype_new
 
+text = """
+- node1001
+  - node1002
+    - node1003
+      - node1004@i4
+  - node1005
+    - node1006@i6
+- node1007
+  - node1008@i8
+- r@n
+- @i4->@i6
+- @i8->@i4
 
+- #position
+- n,300,300
+"""
+config = {"sep":"\n", "tab":"  "}
+
+# %%
 def main(text, config):
+    # %%
     dataset = {
         "node_feature": np.zeros(0, dtype=datatype_new.getDtype("node_feature_np")),
         "link_feature": np.zeros(0, dtype=datatype_new.getDtype("link_feature_np")),
@@ -16,8 +36,10 @@ def main(text, config):
             0, dtype=datatype_new.getDtype("layer_link_feature_np")
         ),
     }
+    # %%
     if "".join(text.split()) == "":
         return dataset
+    # %%
 
     df = text2dataframe(text, config)
     df = df[df["md"] != ""].reset_index(drop=True)
@@ -27,6 +49,7 @@ def main(text, config):
     df["level"] = df["md"].apply(
         lambda x: len(x.split("-")[0].split(config["tab"])) - 1
     )
+    # %%
     df["id"] = range(1001, 1001 + len(df))
     df["text"] = df["md"].apply(lambda x: x.split("- ")[-1])
     df["text"] = df["text"].apply(
@@ -37,7 +60,7 @@ def main(text, config):
         df.to_records(index=False)
     )
     node_f_md = df
-
+    
     size = len(node_f_md)
     node_f = np.zeros(size, datatype_new.getDtype("node_feature_np"))
 
@@ -98,9 +121,10 @@ def main(text, config):
 
     dataset["node_feature"] = node_f
     dataset["link_feature"] = link_f
-
+    # %%
     return dataset
 
+# %%
 
 def getPositionParam(node_f, target_index):
     result = np.zeros(
@@ -217,3 +241,5 @@ def fix_records_under_positionroot_are_in_the_same_region(node_f):
             region = formattedRegion(i["text"])
         result[n] = region
     return result
+
+# %%
